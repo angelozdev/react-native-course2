@@ -4,13 +4,16 @@ import {
   StyleSheet,
   StatusBar,
   View,
-  Dimensions
+  Dimensions,
+  ScrollView
 } from 'react-native'
 import React from 'react'
 import { useCalculator, useTheme } from '../hooks'
 import { Button } from '../components'
 
-const GAP = Dimensions.get('window').width * 0.02
+const { height, width } = Dimensions.get('window')
+const isLandscape = width > height
+const GAP = (isLandscape ? height : width) * 0.02
 const INTERNAL_GAP = GAP / 2
 
 const buttons = [
@@ -115,50 +118,54 @@ export default function MainScreen() {
   const { theme, isDarkMode } = useTheme()
   const { bg: backgroundColor, text: color } = theme.colors
   const { equaltionDisplay, handleClick, result } = useCalculator()
+  const equationLength = equaltionDisplay.length
+  const fontSize = +(60 - equationLength * 1.45).toFixed(2)
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <View style={styles.content}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundColor}
-        />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={[styles.content]}>
+          <StatusBar
+            barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor={backgroundColor}
+          />
 
-        <Text style={[styles.result, { color }]}>
-          {result || equaltionDisplay || '0'}
-        </Text>
+          <Text style={[styles.result, { color, fontSize }]}>
+            {result || equaltionDisplay || '0'}
+          </Text>
 
-        {buttons.map((row, rowIndex) => (
-          <View key={rowIndex} style={styles.buttonsRow}>
-            {row.map(({ label, value, description }, index) => {
-              const isLastInRow = index === row.length - 1
-              const isFirstInRow = index === 0
-              const isInternalButton = !isFirstInRow && !isLastInRow
-              const isZeroButton = value === 0
+          {buttons.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.buttonsRow}>
+              {row.map(({ label, value, description }, index) => {
+                const isLastInRow = index === row.length - 1
+                const isFirstInRow = index === 0
+                const isInternalButton = !isFirstInRow && !isLastInRow
+                const isZeroButton = value === 0
 
-              const style = [
-                styles.button,
-                isLastInRow && styles.rightButton,
-                isFirstInRow && styles.leftButton,
-                isInternalButton && styles.internalButton,
-                isZeroButton && { flex: 2 }
-              ]
+                const style = [
+                  styles.button,
+                  isLastInRow && styles.rightButton,
+                  isFirstInRow && styles.leftButton,
+                  isInternalButton && styles.internalButton,
+                  isZeroButton && { flex: 2 }
+                ]
 
-              return (
-                <Button
-                  accessibilityLabel={description}
-                  key={value}
-                  style={style}
-                  onPress={() => handleClick(value)}
-                  accessibilityHint={description}
-                >
-                  <Text style={[styles.buttonText]}>{label}</Text>
-                </Button>
-              )
-            })}
-          </View>
-        ))}
-      </View>
+                return (
+                  <Button
+                    accessibilityLabel={description}
+                    key={value}
+                    style={style}
+                    onPress={() => handleClick(value)}
+                    accessibilityHint={description}
+                  >
+                    <Text style={[styles.buttonText]}>{label}</Text>
+                  </Button>
+                )
+              })}
+            </View>
+          ))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

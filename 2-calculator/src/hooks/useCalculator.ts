@@ -41,8 +41,9 @@ function useCalculator() {
           else setFirstValue(formatResult(Number(firstValue) / 100))
         },
         decimal: () => {
-          if (operator) setSecondValue(secondValue + '.')
-          else setFirstValue(firstValue + '.')
+          if (operator)
+            !secondValue.includes('.') && setSecondValue(secondValue + '.')
+          else !firstValue.includes('.') && setFirstValue(firstValue + '.')
         },
         equals: () => {
           const newResultByOperator: Record<string, () => number> = {
@@ -53,7 +54,9 @@ function useCalculator() {
           }
 
           const newResult = newResultByOperator[operator]?.()
-          if (typeof newResult === 'undefined') return
+          if (typeof newResult === 'undefined')
+            return setFirstValue(formatResult(firstValue))
+
           setResult('')
           setFirstValue(formatResult(newResult))
           setSecondValue('')
