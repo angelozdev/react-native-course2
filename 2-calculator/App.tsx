@@ -1,10 +1,6 @@
-import { View, Text, SafeAreaView } from 'react-native'
 import React from 'react'
+import { MainScreen } from './src/screens'
 
 export default function App() {
-  return (
-    <SafeAreaView>
-      <Text>App</Text>
-    </SafeAreaView>
-  )
+  return <MainScreen />
 }
