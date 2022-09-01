@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 
 export type RootStackParamList = {
   DrawerNavigator: undefined
-  Greeting: { name: string; username: string }
+  Posts: { name: string; username: string; id: number }
 }
 
 export type DrawerParamList = {
@@ -11,4 +11,4 @@ export type DrawerParamList = {
 }
 
 export type HomeProps = StackScreenProps<RootStackParamList, 'Home'>
-export type GreetingProps = StackScreenProps<RootStackParamList, 'Greeting'>
+export type PostsProps = StackScreenProps<RootStackParamList, 'Posts'>

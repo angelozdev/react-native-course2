@@ -1,5 +1,5 @@
 import React from 'react'
-import { GreetingScreen } from '../screens'
+import { PostsScreen } from '../screens'
 import {
   CardStyleInterpolators,
   createStackNavigator,
@@ -41,10 +41,10 @@ export default function RootNavigation() {
       <Stack.Screen
         options={({ route }) => {
           const { username } = route.params
-          return { title: username }
+          return { title: `${username}'s posts` }
         }}
-        name="Greeting"
-        component={GreetingScreen}
+        name="Posts"
+        component={PostsScreen}
       />
     </Stack.Navigator>
   )

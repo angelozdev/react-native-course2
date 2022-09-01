@@ -1,4 +1,5 @@
 import { Text, StyleSheet, Pressable } from 'react-native'
+import { darken } from 'polished'
 import React from 'react'
 
 interface UserItemProps {
@@ -11,7 +12,7 @@ export default function UserItem({ onClick, username }: UserItemProps) {
     <Pressable
       onPress={onClick}
       accessibilityRole="button"
-      style={styles.container}
+      style={({ pressed }) => [styles.container, pressed && styles.isPressed]}
     >
       <Text>{username}</Text>
     </Pressable>
@@ -20,8 +21,11 @@ export default function UserItem({ onClick, username }: UserItemProps) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 8,
+    padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc'
+  },
+  isPressed: {
+    backgroundColor: darken(0.05, '#fff')
   }
 })
