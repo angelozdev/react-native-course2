@@ -34,7 +34,7 @@ export default function PostsScreen({ route }: PostsProps) {
           renderItem={({ item: { body, title, id: postId } }) => (
             <PostItem id={postId} title={title} body={body} />
           )}
-          data={data?.data}
+          data={data}
           ListEmptyComponent={() => (
             <View style={styles.container}>
               <Text>No posts found</Text>

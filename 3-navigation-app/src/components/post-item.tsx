@@ -34,7 +34,7 @@ function PostItem({ body, title, id }: PostItemProps) {
           renderItem={({ item: { name, body: comment } }) => (
             <CommentItem title={name} comment={comment} />
           )}
-          data={data?.data}
+          data={data}
           keyExtractor={({ id: commentId }) => commentId.toString()}
         />
       )}

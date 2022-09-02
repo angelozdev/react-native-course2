@@ -12,18 +12,16 @@ const axios = Axios.create({
 
 export async function getAll() {
   await sleep(1000)
-  return axios
-    .get<User[]>('/')
-    .then((data) => ({ ...data, data: shuffle(data.data) }))
+  return axios.get<User[]>('/').then(({ data }) => shuffle(data))
 }
 
-export function getById(id: number) {
-  return axios.get(`/${id}`)
+export async function getById(id: number) {
+  return axios.get(`/${id}`).then(({ data }) => data)
 }
 
 export async function getPosts(id: number) {
   await sleep(1000)
-  return axios.get<Post[]>(`/${id}/posts`)
+  return axios.get<Post[]>(`/${id}/posts`).then(({ data }) => shuffle(data))
 }
 
 const usersApi = {

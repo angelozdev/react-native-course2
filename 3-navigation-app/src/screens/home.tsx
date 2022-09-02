@@ -1,5 +1,6 @@
 import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+
 import usersApi from '../api/users'
 import { type HomeProps } from './types'
 import { usePromise } from '../hooks'
@@ -16,10 +17,12 @@ export default function HomeScreen({ navigation }: HomeProps) {
         refreshControl={
           <RefreshControl refreshing={isPending} onRefresh={refetch} />
         }
-        data={data?.data}
+        data={data}
         renderItem={({ item: { name, username, id } }) => (
           <UserItem
-            onClick={() => navigation.navigate('Posts', { name, username, id })}
+            onClick={() =>
+              navigation.navigate('PostListByUser', { name, username, id })
+            }
             username={username}
           />
         )}

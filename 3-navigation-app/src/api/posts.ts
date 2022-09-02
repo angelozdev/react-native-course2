@@ -13,7 +13,7 @@ export async function getComments(postId: number) {
   console.log('getComments', postId)
   await sleep(1000)
 
-  return axios.get<Comment[]>(`/${postId}/comments`)
+  return axios.get<Comment[]>(`/${postId}/comments`).then((res) => res.data)
 }
 
 const postsApi = {

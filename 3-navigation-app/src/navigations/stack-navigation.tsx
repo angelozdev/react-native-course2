@@ -1,5 +1,5 @@
 import React from 'react'
-import { PostsScreen } from '../screens'
+import { HomeScreen, PostListByUserScreen } from '../screens'
 import {
   CardStyleInterpolators,
   createStackNavigator,
@@ -7,7 +7,6 @@ import {
   StackNavigationOptions
 } from '@react-navigation/stack'
 import { RootStackParamList } from '../screens/types'
-import DrawerNavigation from './drawer-navigation'
 
 const Stack = createStackNavigator<RootStackParamList>()
 const stackNavigationOptions: StackNavigationOptions = {
@@ -31,20 +30,20 @@ export default function RootNavigation() {
   return (
     <Stack.Navigator
       screenOptions={stackNavigationOptions}
-      initialRouteName="DrawerNavigator"
+      initialRouteName="Home"
     >
       <Stack.Screen
         options={{ headerShown: false }}
-        name="DrawerNavigator"
-        component={DrawerNavigation}
+        name="Home"
+        component={HomeScreen}
       />
       <Stack.Screen
         options={({ route }) => {
           const { username } = route.params
           return { title: `${username}'s posts` }
         }}
-        name="Posts"
-        component={PostsScreen}
+        name="PostListByUser"
+        component={PostListByUserScreen}
       />
     </Stack.Navigator>
   )
