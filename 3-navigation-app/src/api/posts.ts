@@ -1,23 +1,31 @@
-import Axios from 'axios'
-import { sleep } from '../utils'
+import { axios } from '../lib'
+import { shuffle, sleep } from '../utils'
 import { Comment } from './comments.types'
+import { Post } from './posts.types'
+import { IOptions } from './common.types'
 
-const axios = Axios.create({
-  baseURL: 'https://jsonplaceholder.typicode.com/posts',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
+export async function getComments(postId: number, options: IOptions = {}) {
+  const { limit, offset } = options
+  return axios
+    .get<Comment[]>(`/posts/${postId}/comments`, {
+      params: { _limit: limit, _offset: offset }
+    })
+    .then((data) => {
+      if (Math.random() > 0.6)
+        throw new Error('Something went wrong when fetching comments')
+      return data
+    })
+    .then((res) => shuffle(res.data))
+}
 
-export async function getComments(postId: number) {
-  console.log('getComments', postId)
+export async function getAll() {
   await sleep(1000)
-
-  return axios.get<Comment[]>(`/${postId}/comments`).then((res) => res.data)
+  return axios.get<Post[]>(`/posts`).then((res) => shuffle(res.data))
 }
 
 const postsApi = {
-  getComments
+  getComments,
+  getAll
 }
 
 export default postsApi

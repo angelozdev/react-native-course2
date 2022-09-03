@@ -12,7 +12,7 @@ function DrawerNavigation() {
       <Drawer.Screen
         name="BottomTabsNavigator"
         component={BottomTabsNavigator}
-        options={{ title: 'User list' }}
+        options={{ title: 'App', headerTitle: '' }}
       />
       <Drawer.Screen name="Settings" component={SettingsScreen} />
     </Drawer.Navigator>

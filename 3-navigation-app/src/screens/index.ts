@@ -1,4 +1,7 @@
+export { default as AddressInfo } from './address-info'
 export { default as HomeScreen } from './home'
+export { default as PersonalInfo } from './personal-info'
 export { default as PostList } from './post-list'
 export { default as PostListByUserScreen } from './posts-by-user'
 export { default as SettingsScreen } from './settings'
+export { default as CompanyInfo } from './company-info'

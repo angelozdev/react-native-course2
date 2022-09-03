@@ -6,7 +6,8 @@ import {
   HeaderStyleInterpolators,
   StackNavigationOptions
 } from '@react-navigation/stack'
-import { RootStackParamList } from '../screens/types'
+import { type RootStackParamList } from '../screens/types'
+import TopTabsUseInfo from './top-tabs-user-info'
 
 const Stack = createStackNavigator<RootStackParamList>()
 const stackNavigationOptions: StackNavigationOptions = {
@@ -44,6 +45,14 @@ export default function RootNavigation() {
         }}
         name="PostListByUser"
         component={PostListByUserScreen}
+      />
+      <Stack.Screen
+        options={({ route }) => {
+          const { name } = route.params.params || {}
+          return { title: `${name} info`, headerShown: false }
+        }}
+        name="TopTabsUserInfo"
+        component={TopTabsUseInfo}
       />
     </Stack.Navigator>
   )

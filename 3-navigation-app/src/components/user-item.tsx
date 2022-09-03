@@ -1,31 +1,58 @@
-import { Text, StyleSheet, Pressable } from 'react-native'
-import { darken } from 'polished'
+import { Text, StyleSheet, View, Button, Pressable } from 'react-native'
 import React from 'react'
+import { darken } from 'polished'
 
 interface UserItemProps {
-  onClick?: () => void
+  goToPosts: () => void
+  goToUserInfo: () => void
   username: string
 }
 
-export default function UserItem({ onClick, username }: UserItemProps) {
+export default function UserItem({
+  goToPosts,
+  username,
+  goToUserInfo
+}: UserItemProps) {
   return (
-    <Pressable
-      onPress={onClick}
-      accessibilityRole="button"
-      style={({ pressed }) => [styles.container, pressed && styles.isPressed]}
-    >
-      <Text>{username}</Text>
-    </Pressable>
+    <View style={styles.container}>
+      <Pressable
+        onPress={goToUserInfo}
+        accessibilityRole="button"
+        style={({ pressed }) => [
+          styles.titleContainer,
+          pressed && styles.pressed
+        ]}
+      >
+        <Text style={styles.title}>{username}</Text>
+      </Pressable>
+      <View style={styles.buttonContainer}>
+        <Button title="Go to posts" onPress={goToPosts} />
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc'
+    borderBottomColor: '#ccc',
+    flexDirection: 'row',
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
-  isPressed: {
-    backgroundColor: darken(0.05, '#fff')
+  buttonContainer: {
+    flex: 0
+  },
+  pressed: {
+    backgroundColor: darken(0.02, '#fff')
+  },
+  titleContainer: {
+    flex: 1,
+    padding: 16
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: '600'
   }
 })

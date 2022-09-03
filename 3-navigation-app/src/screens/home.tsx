@@ -18,14 +18,20 @@ export default function HomeScreen({ navigation }: HomeProps) {
           <RefreshControl refreshing={isPending} onRefresh={refetch} />
         }
         data={data}
-        renderItem={({ item: { name, username, id } }) => (
-          <UserItem
-            onClick={() =>
-              navigation.navigate('PostListByUser', { name, username, id })
-            }
-            username={username}
-          />
-        )}
+        renderItem={({ item }) => {
+          const { name, username, id } = item
+          return (
+            <UserItem
+              goToPosts={() =>
+                navigation.navigate('PostListByUser', { name, username, id })
+              }
+              goToUserInfo={() => {
+                navigation.navigate('TopTabsUserInfo', item)
+              }}
+              username={username}
+            />
+          )
+        }}
         keyExtractor={({ id }) => id.toString()}
         contentContainerStyle={styles.list}
         ListHeaderComponent={<Text style={styles.title}>Users</Text>}

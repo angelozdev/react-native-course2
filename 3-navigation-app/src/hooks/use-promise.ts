@@ -6,20 +6,26 @@ interface IState<TData = unknown, TError = Error> {
   error: TError | null
 }
 
-type TOptions = {
-  initialData?: any | null
+type TOptions<TData, TError> = {
+  initialData?: TData | null
   enabled?: boolean
   keepPreviousData?: boolean
+  onError?: (error: TError) => void
+  onSuccess?: (data: TData) => void
+  onComplete?: (data: TData | null, error: TError | null) => void
 }
 
 function usePromise<T = unknown, TError = Error>(
   exec: () => Promise<T>,
-  options: TOptions = {}
+  options: TOptions<T, TError> = {}
 ) {
   const {
     initialData = null,
     enabled = true,
-    keepPreviousData = false
+    keepPreviousData = false,
+    onError,
+    onSuccess,
+    onComplete
   } = options
   const [state, setState] = React.useState<IState<T, TError>>({
     status: 'idle',
@@ -33,10 +39,19 @@ function usePromise<T = unknown, TError = Error>(
       data: keepPreviousData ? data : null,
       error: null
     }))
-    exec().then(
-      (data) => setState({ status: 'resolved', data, error: null }),
-      (error: TError) => setState({ status: 'rejected', data: null, error })
-    )
+
+    exec()
+      .then((data) => {
+        onSuccess?.(data)
+        setState({ status: 'resolved', data, error: null })
+      })
+      .catch((error: TError) => {
+        onError?.(error)
+        setState({ status: 'rejected', data: null, error })
+      })
+      .finally(() => {
+        onComplete?.(state.data, state.error)
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

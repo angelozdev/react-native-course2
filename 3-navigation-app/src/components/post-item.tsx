@@ -7,6 +7,7 @@ import {
   Text,
   View
 } from 'react-native'
+import { useToast } from 'react-native-toast-notifications'
 import postsApi from '../api/posts'
 import { usePromise, useToggle } from '../hooks'
 import CommentItem from './comment-item'
@@ -17,22 +18,34 @@ interface PostItemProps {
   id: number
 }
 function PostItem({ body, title, id }: PostItemProps) {
+  const toast = useToast()
   const [isCommentsVisibles, loadComments] = useToggle(false)
-  const { data, isIdle, isPending, isResolved } = usePromise(
-    () => postsApi.getComments(id),
-    { enabled: isCommentsVisibles }
+  const { data, isPending, isResolved } = usePromise(
+    () => postsApi.getComments(id, { limit: 5 }),
+    {
+      enabled: isCommentsVisibles,
+      onError(error) {
+        loadComments()
+        toast.show(error.message)
+      }
+    }
   )
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.body}>{body}</Text>
-      {isIdle && <Button onPress={loadComments} title="Show comments" />}
+      {!isPending && (
+        <Button
+          onPress={loadComments}
+          title={isCommentsVisibles ? 'Hide' : 'Show last 5 comments'}
+        />
+      )}
       {isPending && <ActivityIndicator />}
-      {isResolved && (
+      {isResolved && isCommentsVisibles && (
         <FlatList
-          renderItem={({ item: { name, body: comment } }) => (
-            <CommentItem title={name} comment={comment} />
+          renderItem={({ item: { name, body: comment, email } }) => (
+            <CommentItem email={email} title={name} comment={comment} />
           )}
           data={data}
           keyExtractor={({ id: commentId }) => commentId.toString()}
@@ -46,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 18,
     paddingVertical: 12,
-    marginBottom: 12,
+    marginBottom: 24,
     backgroundColor: '#fff',
     flexGrow: 1
   },

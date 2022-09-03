@@ -1,7 +1,10 @@
 import 'react-native-gesture-handler'
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
 import RNBootSplash from 'react-native-bootsplash'
+import { NavigationContainer } from '@react-navigation/native'
+import { ToastProvider } from 'react-native-toast-notifications'
+import Icon from 'react-native-vector-icons/AntDesign'
+
 import { DrawerNavigator } from './src/navigations'
 
 export default function App() {
@@ -10,8 +13,15 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer onReady={onReady}>
-      <DrawerNavigator />
-    </NavigationContainer>
+    <ToastProvider
+      dangerIcon={<Icon name="closecircleo" color="white" />}
+      offsetTop={50}
+      placement="top"
+      type="danger"
+    >
+      <NavigationContainer onReady={onReady}>
+        <DrawerNavigator />
+      </NavigationContainer>
+    </ToastProvider>
   )
 }
