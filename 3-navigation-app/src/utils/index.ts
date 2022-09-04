@@ -9,3 +9,9 @@ export function shuffle<T>(array: T[]) {
   }
   return array
 }
+
+export function getRandomNumber(
+  { max, min }: { max: number; min: number } = { max: 100, min: 1 }
+) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}

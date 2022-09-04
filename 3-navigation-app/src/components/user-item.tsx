@@ -8,11 +8,7 @@ interface UserItemProps {
   username: string
 }
 
-export default function UserItem({
-  goToPosts,
-  username,
-  goToUserInfo
-}: UserItemProps) {
+function UserItem({ goToPosts, username, goToUserInfo }: UserItemProps) {
   return (
     <View style={styles.container}>
       <Pressable
@@ -56,3 +52,5 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   }
 })
+
+export default React.memo(UserItem)

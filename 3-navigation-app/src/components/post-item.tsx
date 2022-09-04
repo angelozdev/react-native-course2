@@ -59,9 +59,10 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 18,
     paddingVertical: 12,
-    marginBottom: 24,
+    marginHorizontal: 12,
     backgroundColor: '#fff',
-    flexGrow: 1
+    flexGrow: 1,
+    marginTop: 18
   },
   title: {
     fontSize: 16,
@@ -74,4 +75,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default PostItem
+export default React.memo(PostItem)

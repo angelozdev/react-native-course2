@@ -47,10 +47,7 @@ export default function RootNavigation() {
         component={PostListByUserScreen}
       />
       <Stack.Screen
-        options={({ route }) => {
-          const { name } = route.params.params || {}
-          return { title: `${name} info`, headerShown: false }
-        }}
+        options={{ headerShown: false }}
         name="TopTabsUserInfo"
         component={TopTabsUseInfo}
       />

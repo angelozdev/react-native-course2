@@ -5,10 +5,13 @@ import usersApi from '../api/users'
 import { type HomeProps } from './types'
 import { usePromise } from '../hooks'
 import { UserItem } from '../components'
+import { useToast } from 'react-native-toast-notifications'
 
 export default function HomeScreen({ navigation }: HomeProps) {
-  const { data, isPending, refetch } = usePromise(usersApi.getAll, {
-    keepPreviousData: true
+  const toast = useToast()
+  const { data, isPending, refetch, isRejected } = usePromise(usersApi.getAll, {
+    keepPreviousData: true,
+    onError: (error) => toast.show(error.message, { type: 'danger' })
   })
 
   return (
@@ -38,7 +41,11 @@ export default function HomeScreen({ navigation }: HomeProps) {
         ListEmptyComponent={
           isPending ? null : (
             <View style={styles.contentContainer}>
-              <Text>No users found</Text>
+              {isRejected ? (
+                <Text>Something went wrong</Text>
+              ) : (
+                <Text>No users found</Text>
+              )}
             </View>
           )
         }

@@ -1,0 +1,13 @@
+import React from 'react'
+
+import { Provider } from 'react-redux'
+import { store } from '@/store'
+import { PopularMoviesScreen } from '@/screens'
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <PopularMoviesScreen />
+    </Provider>
+  )
+}
