@@ -9,11 +9,12 @@ type TAxiosBaseQueryArgs = {
 
 export const axiosBaseQuery =
   ({
-    baseURL,
+    baseURL = '/',
     headers
   }: TAxiosBaseQueryArgs): BaseQueryFn<AxiosRequestConfig> =>
   async (config) => {
     try {
+      console.log('Fetching from: ', baseURL + config.url)
       const result = await axios(Object.assign(config, { baseURL, headers }))
       return { data: result.data }
     } catch (axiosError) {

@@ -1,46 +1,61 @@
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
 import React from 'react'
-import { Movie } from '@/types/movies'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  type PressableStateCallbackType
+} from 'react-native'
+import { Badge } from './badge'
 
-type Props = Movie
+import type { IMovie } from '@/types/movies'
+
+type Props = {
+  overview: IMovie['overview']
+  posterPath: IMovie['poster_path']
+  title: IMovie['title']
+  voteAverage: IMovie['vote_average']
+  onPress?: () => void
+}
 
 function getColorByVoteAverage(voteAverage: number) {
-  if (voteAverage >= 7) {
-    return '#4caf50'
-  }
-  if (voteAverage >= 5) {
-    return '#ff9800'
-  }
+  if (voteAverage >= 8) return '#4caf50'
+  else if (voteAverage >= 6) return '#ff9800'
+  else if (voteAverage >= 4) return '#ff5722'
   return '#f44336'
 }
 
-function MovieCard({ title, overview, poster_path, vote_average }: Props) {
+function MovieCard({
+  title,
+  overview,
+  posterPath,
+  voteAverage,
+  onPress
+}: Props) {
+  const badgeColor = getColorByVoteAverage(voteAverage)
+  const urlImage = `https://image.tmdb.org/t/p/w500${posterPath}`
+  const getContainerStyles = ({ pressed }: PressableStateCallbackType) => [
+    styles.container,
+    pressed && styles.isPressed
+  ]
+
   return (
     <Pressable
+      onPress={onPress}
       accessibilityRole="button"
-      style={({ pressed }) => [styles.container, pressed && styles.isPressed]}
+      style={getContainerStyles}
     >
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        <Text
-          style={[
-            styles.badge,
-            { backgroundColor: getColorByVoteAverage(vote_average) }
-          ]}
-        >
-          {vote_average}
-        </Text>
+        <Badge bgColor={badgeColor}>{voteAverage}</Badge>
       </View>
       <View style={styles.body}>
         <View style={styles.imageContainer}>
           <Image
             accessibilityIgnoresInvertColors
             style={styles.image}
-            source={{
-              uri: `https://image.tmdb.org/t/p/w500${poster_path}`,
-              width: 100,
-              height: 160
-            }}
+            source={{ uri: urlImage }}
           />
         </View>
         <View style={styles.overview}>
@@ -55,7 +70,9 @@ function MovieCard({ title, overview, poster_path, vote_average }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    padding: 24,
+    backgroundColor: '#fff'
   },
   isPressed: {
     opacity: 0.8
@@ -69,32 +86,25 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: 'cover',
-    width: '100%'
+    aspectRatio: 2 / 3
   },
   overview: {
-    flexGrow: 2,
+    flexGrow: 5,
     flex: 1,
     justifyContent: 'center'
   },
   overviewText: {},
   imageContainer: {
-    flexGrow: 1,
     marginRight: 16,
     borderRadius: 8,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    flexGrow: 2
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 16
-  },
-  badge: {
-    backgroundColor: '#ccc',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginLeft: 8,
-    color: '#fff'
   }
 })
 
