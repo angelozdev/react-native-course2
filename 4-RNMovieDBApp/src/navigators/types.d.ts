@@ -1,6 +1,7 @@
 export type TMainBottomTabsParamList = {
-  NowPlayingMovesStack: undefined
   PopularMoviesStack: undefined
+  NowPlayingMovesStack: undefined
+  TopRatedMoviesStack: undefined
 }
 
 export type TMovieListStackParamList = {

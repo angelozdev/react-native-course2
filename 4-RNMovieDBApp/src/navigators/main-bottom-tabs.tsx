@@ -8,13 +8,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {
   faFilm,
   faTicketSimple,
+  faUpLong,
   type IconDefinition
 } from '@fortawesome/free-solid-svg-icons'
 
 import type { TMainBottomTabsParamList } from './types'
 import {
   NowPlayingMoviesStackNavigator,
-  PopularMoviesStackNavigator
+  PopularMoviesStackNavigator,
+  TopgMoviesStackNavigator
 } from './movie-list-stack'
 const BottomTabs = createBottomTabNavigator<TMainBottomTabsParamList>()
 
@@ -25,7 +27,8 @@ const TabBarIcon: BottomTabNavigationOptions['tabBarIcon'] = ({ color }) => {
     IconDefinition
   > = {
     PopularMoviesStack: faFilm,
-    NowPlayingMovesStack: faTicketSimple
+    NowPlayingMovesStack: faTicketSimple,
+    TopRatedMoviesStack: faUpLong
   }
 
   return (
@@ -55,6 +58,12 @@ export default function MainBottomTabs() {
         options={{ title: 'Now Playing' }}
         name="NowPlayingMovesStack"
         component={NowPlayingMoviesStackNavigator}
+      />
+
+      <BottomTabs.Screen
+        options={{ title: 'Top' }}
+        name="TopRatedMoviesStack"
+        component={TopgMoviesStackNavigator}
       />
     </BottomTabs.Navigator>
   )

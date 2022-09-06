@@ -1,18 +1,19 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { MOVIE_DB_ACCESS_TOKEN } from '@env'
 import { BaseQueryFn } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { sleep } from '@/utils/promises'
 
 type TAxiosBaseQueryArgs = {
   baseURL: AxiosRequestConfig['baseURL']
   headers?: AxiosRequestConfig['headers']
 }
 
-export const axiosBaseQuery =
-  ({
-    baseURL = '/',
-    headers
-  }: TAxiosBaseQueryArgs): BaseQueryFn<AxiosRequestConfig> =>
-  async (config) => {
+export const axiosBaseQuery = ({
+  baseURL = '/',
+  headers
+}: TAxiosBaseQueryArgs): BaseQueryFn<AxiosRequestConfig> =>
+  async function fetcher(config) {
+    await sleep(1000)
     try {
       console.log('Fetching from: ', baseURL + config.url)
       const result = await axios(Object.assign(config, { baseURL, headers }))

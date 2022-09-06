@@ -10,6 +10,7 @@ import {
 import { Badge } from './badge'
 
 import type { IMovie } from '@/types/movies'
+import { getColorByVoteAverage } from '@/utils/movie.utils'
 
 type Props = {
   overview: IMovie['overview']
@@ -17,13 +18,6 @@ type Props = {
   title: IMovie['title']
   voteAverage: IMovie['vote_average']
   onPress?: () => void
-}
-
-function getColorByVoteAverage(voteAverage: number) {
-  if (voteAverage >= 8) return '#4caf50'
-  else if (voteAverage >= 6) return '#ff9800'
-  else if (voteAverage >= 4) return '#ff5722'
-  return '#f44336'
 }
 
 function MovieCard({
@@ -79,7 +73,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    flex: 1,
+    flexGrow: 1,
+    marginRight: 16
   },
   body: {
     flexDirection: 'row'
@@ -104,7 +101,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16
+    marginBottom: 16,
+    flex: 1
   }
 })
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useGetPopularMoviesQuery } from '@/services/movies'
+import { useGetTopRatedMoviesQuery } from '@/services/movies'
 import { MovieList } from '@/components'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { TMovieListStackParamList } from '@/navigators/types'
@@ -9,10 +9,7 @@ type Props = NativeStackScreenProps<TMovieListStackParamList, 'MovieList'>
 
 function PopularMovies({ navigation }: Props) {
   const [page, setPage] = React.useState(1)
-  const { data, refetch, isFetching } = useGetPopularMoviesQuery({
-    page
-  })
-
+  const { data, refetch, isFetching } = useGetTopRatedMoviesQuery({ page })
   const movieList = useAccumulateData(data?.results)
 
   const handleEndReached = () => {

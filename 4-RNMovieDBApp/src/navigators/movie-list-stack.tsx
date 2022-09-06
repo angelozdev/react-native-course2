@@ -4,7 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import {
   PopularMoviesScreen,
   NowPlayingMoviesScreen,
-  MovieDetailScreen
+  MovieDetailScreen,
+  TopMoviesScreen
 } from '@/screens'
 import type { TMovieListStackParamList } from './types'
 
@@ -42,6 +43,18 @@ export function NowPlayingMoviesStackNavigator() {
         options={{ title: 'Now Playing' }}
         name="MovieList"
         component={NowPlayingMoviesScreen}
+      />
+    </WrapperNavigator>
+  )
+}
+
+export function TopgMoviesStackNavigator() {
+  return (
+    <WrapperNavigator>
+      <MovieListStack.Screen
+        options={{ title: 'Top Movies' }}
+        name="MovieList"
+        component={TopMoviesScreen}
       />
     </WrapperNavigator>
   )

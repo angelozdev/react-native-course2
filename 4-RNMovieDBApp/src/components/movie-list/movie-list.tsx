@@ -14,6 +14,7 @@ type Props = {
   isFetching: boolean
   refetch: () => void
   onPressMovie?: (movie: IMovie) => void
+  onEndReached?: () => void
 }
 
 function Separator() {
@@ -24,7 +25,8 @@ export default function MovieList({
   isFetching,
   movieList,
   refetch,
-  onPressMovie
+  onPressMovie,
+  onEndReached
 }: Props) {
   const renderItem: ListRenderItem<IMovie> = ({ item }) => {
     const { title, poster_path, vote_average, overview } = item
@@ -48,6 +50,8 @@ export default function MovieList({
       data={movieList}
       keyExtractor={({ id }) => String(id)}
       ItemSeparatorComponent={Separator}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={5}
     />
   )
 }

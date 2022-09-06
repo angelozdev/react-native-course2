@@ -1,18 +1,14 @@
-import { popularMoviesApi } from '@/services/movies'
+import { moviesApi } from '@/services/movies'
 import { configureStore } from '@reduxjs/toolkit'
 
 const store = configureStore({
   reducer: {
-    [popularMoviesApi.reducerPath]: popularMoviesApi.reducer
+    [moviesApi.reducerPath]: moviesApi.reducer
   },
   middleware: (getDefaultMiddleware) => {
     const defaultMiddlewares = getDefaultMiddleware()
-    return defaultMiddlewares.concat(popularMoviesApi.middleware)
+    return defaultMiddlewares.concat(moviesApi.middleware)
   }
-})
-
-store.subscribe(() => {
-  // console.log(store.getState())
 })
 
 export default store
