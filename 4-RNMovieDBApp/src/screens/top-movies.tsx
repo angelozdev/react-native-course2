@@ -10,7 +10,7 @@ type Props = NativeStackScreenProps<TMovieListStackParamList, 'MovieList'>
 function PopularMovies({ navigation }: Props) {
   const [page, setPage] = React.useState(1)
   const { data, refetch, isFetching } = useGetTopRatedMoviesQuery({ page })
-  const movieList = useAccumulateData(data?.results)
+  const [movieList] = useAccumulateData(data?.results)
 
   const handleEndReached = () => {
     if (data?.total_pages && page < data.total_pages) {
@@ -22,7 +22,7 @@ function PopularMovies({ navigation }: Props) {
     <MovieList
       isFetching={isFetching}
       movieList={movieList}
-      refetch={refetch}
+      onRefresh={refetch}
       onPressMovie={({ id, title }) =>
         navigation.navigate('MovieDetails', { title, id })
       }

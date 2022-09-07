@@ -1,7 +1,8 @@
 import React from 'react'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+
 import { useGetPopularMoviesQuery } from '@/services/movies'
 import { MovieList } from '@/components'
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { TMovieListStackParamList } from '@/navigators/types'
 import { useAccumulateData } from '@/hooks'
 
@@ -13,19 +14,26 @@ function PopularMovies({ navigation }: Props) {
     page
   })
 
-  const movieList = useAccumulateData(data?.results)
-
+  const [movieList, { reset }] = useAccumulateData(data?.results)
   const handleEndReached = () => {
     if (data?.total_pages && page < data.total_pages) {
       setPage((prevPage) => prevPage + 1)
     }
   }
 
+  const handleRefresh = () => {
+    setPage((prevPage) => {
+      if (prevPage > 1) reset()
+      refetch()
+      return 1
+    })
+  }
+
   return (
     <MovieList
       isFetching={isFetching}
       movieList={movieList}
-      refetch={refetch}
+      onRefresh={handleRefresh}
       onPressMovie={({ id, title }) =>
         navigation.navigate('MovieDetails', { title, id })
       }

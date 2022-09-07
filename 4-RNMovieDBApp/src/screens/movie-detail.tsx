@@ -9,20 +9,23 @@ import {
 } from 'react-native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { useGetMovieDetailsQuery } from '@/services/movies'
+import {
+  useGetMovieCastQuery,
+  useGetMovieDetailsQuery
+} from '@/services/movies'
 import type { TMovieListStackParamList } from '@/navigators/types'
 import { Badge } from '@/components'
-import {
-  getColorByVoteAverage,
-  getIconByVoteAverage
-} from '@/utils/movie.utils'
+import { getColorByVoteAverage } from '@/utils/movie.utils'
+import { Cast } from '@/types/movies'
 
 type Props = NativeStackScreenProps<TMovieListStackParamList, 'MovieDetails'>
 
 export default function MovieDetailScreen({ route }: Props) {
-  const { data, isLoading } = useGetMovieDetailsQuery(route.params.id)
+  const { id: movieId } = route.params
+  const movieDetailQuery = useGetMovieDetailsQuery(movieId)
+  const movieCastQuery = useGetMovieCastQuery(movieId)
 
-  if (isLoading && typeof data === 'undefined') {
+  if (movieDetailQuery.isLoading && movieDetailQuery.data === undefined) {
     return <ActivityIndicator />
   }
 
@@ -33,18 +36,19 @@ export default function MovieDetailScreen({ route }: Props) {
     backdrop_path: backdropPath,
     vote_average: voteAverage,
     genres = []
-  } = data || {}
+  } = movieDetailQuery.data || {}
   const backdropUrl = `https://image.tmdb.org/t/p/w500${backdropPath}`
   const releaseYear = new Date(releaseDate!).getFullYear()
-  const badgeText = `${getIconByVoteAverage(voteAverage)}  ${voteAverage}`
   const badgeBgColor = getColorByVoteAverage(voteAverage)
   const genresText = genres.map((genre) => genre.name).join(', ')
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Badge style={styles.badge} bgColor={badgeBgColor}>
-        {badgeText}
-      </Badge>
+      {voteAverage && (
+        <Badge style={styles.badge} bgColor={badgeBgColor}>
+          {voteAverage}
+        </Badge>
+      )}
       <Image
         resizeMode="cover"
         accessibilityIgnoresInvertColors
@@ -59,17 +63,41 @@ export default function MovieDetailScreen({ route }: Props) {
         </Text>
         <Text style={[styles.overview, styles.text]}>{overview}</Text>
 
-        {/* display genres */}
         {genresText && (
-          <View style={styles.genresContainer}>
+          <View style={styles.section}>
             <Text style={styles.text}>{genresText}</Text>
           </View>
         )}
-        {/* <Text>{JSON.stringify(data, null, 2)}</Text> */}
+
+        <View style={styles.section}>
+          {movieCastQuery.isLoading && <ActivityIndicator />}
+          {movieCastQuery.data?.cast.map((item) => {
+            if (!item.profile_path) return null
+            return <CastItem key={item.id} {...item} />
+          })}
+        </View>
       </View>
     </ScrollView>
   )
 }
+
+const CastItem = React.memo<Cast>(({ profile_path, name }) => {
+  return (
+    <View style={styles.castContainer}>
+      <Image
+        resizeMode="contain"
+        style={styles.castImage}
+        accessibilityIgnoresInvertColors
+        source={{
+          uri: `https://image.tmdb.org/t/p/w500${profile_path}`,
+          width: 50,
+          height: 50
+        }}
+      />
+      <Text style={[styles.text, styles.castName]}>{name}</Text>
+    </View>
+  )
+})
 
 const styles = StyleSheet.create({
   container: {
@@ -106,7 +134,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#444'
   },
-  genresContainer: {
-    marginTop: 8
+  section: {
+    marginTop: 16
+  },
+  castContainer: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    alignItems: 'center'
+  },
+  castName: {
+    marginLeft: 8
+  },
+  castImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25
   }
 })

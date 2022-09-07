@@ -12,7 +12,7 @@ import { IMovie } from '@/types/movies'
 type Props = {
   movieList: IMovie[] | undefined | null
   isFetching: boolean
-  refetch: () => void
+  onRefresh: () => void
   onPressMovie?: (movie: IMovie) => void
   onEndReached?: () => void
 }
@@ -24,12 +24,12 @@ function Separator() {
 export default function MovieList({
   isFetching,
   movieList,
-  refetch,
+  onRefresh,
   onPressMovie,
   onEndReached
 }: Props) {
   const renderItem: ListRenderItem<IMovie> = ({ item }) => {
-    const { title, poster_path, vote_average, overview } = item
+    const { title, poster_path, vote_average, overview, id } = item
     return (
       <MovieCard
         overview={overview}
@@ -37,6 +37,7 @@ export default function MovieList({
         title={title}
         voteAverage={vote_average}
         onPress={() => onPressMovie?.(item)}
+        id={id}
       />
     )
   }
@@ -44,7 +45,7 @@ export default function MovieList({
   return (
     <FlatList
       refreshControl={
-        <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+        <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />
       }
       renderItem={renderItem}
       data={movieList}

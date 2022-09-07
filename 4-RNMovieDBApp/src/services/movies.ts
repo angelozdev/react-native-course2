@@ -1,5 +1,5 @@
 import { movieDBBaseQuery } from '@/lib'
-import { IMovieDetails, MovieDBResult } from '@/types/movies'
+import { ICast, IMovieDetails, MovieDBResult } from '@/types/movies'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 type TParams = Partial<{
@@ -13,7 +13,8 @@ export const moviesApi = createApi({
     'PopularMovies',
     'NowPlayingMovies',
     'MovieDetails',
-    'TopRatedMovies'
+    'TopRatedMovies',
+    'MovieCast'
   ],
   keepUnusedDataFor: 60 * 60 * 12, // 12 hours
   endpoints: (builder) => ({
@@ -44,6 +45,10 @@ export const moviesApi = createApi({
       providesTags: (_response, _error, { page }) => [
         { type: 'TopRatedMovies', id: page ?? 1 }
       ]
+    }),
+    getMovieCast: builder.query<ICast, number>({
+      query: (id) => ({ method: 'GET', url: `/movie/${id}/credits` }),
+      providesTags: (result, error, id) => [{ type: 'MovieCast', id }]
     })
   })
 })
@@ -52,5 +57,6 @@ export const {
   useGetPopularMoviesQuery,
   useGetNowPlayingMoviesQuery,
   useGetMovieDetailsQuery,
-  useGetTopRatedMoviesQuery
+  useGetTopRatedMoviesQuery,
+  useGetMovieCastQuery
 } = moviesApi
