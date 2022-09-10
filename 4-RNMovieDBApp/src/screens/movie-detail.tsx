@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   ActivityIndicator,
+  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -14,9 +15,10 @@ import {
   useGetMovieDetailsQuery
 } from '@/services/movies'
 import type { TMovieListStackParamList } from '@/navigators/types'
-import { Badge } from '@/components'
+import { Badge, CastItem } from '@/components'
 import { getColorByVoteAverage } from '@/utils/movie.utils'
-import { Cast } from '@/types/movies'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faStar } from '@fortawesome/free-solid-svg-icons'
 
 type Props = NativeStackScreenProps<TMovieListStackParamList, 'MovieDetails'>
 
@@ -25,8 +27,8 @@ export default function MovieDetailScreen({ route }: Props) {
   const movieDetailQuery = useGetMovieDetailsQuery(movieId)
   const movieCastQuery = useGetMovieCastQuery(movieId)
 
-  if (movieDetailQuery.isLoading && movieDetailQuery.data === undefined) {
-    return <ActivityIndicator />
+  if (movieDetailQuery.isLoading) {
+    return <ActivityIndicator style={styles.activeIndicator} />
   }
 
   const {
@@ -37,16 +39,22 @@ export default function MovieDetailScreen({ route }: Props) {
     vote_average: voteAverage,
     genres = []
   } = movieDetailQuery.data || {}
+
+  const { cast = [] } = movieCastQuery.data || {}
   const backdropUrl = `https://image.tmdb.org/t/p/w500${backdropPath}`
   const releaseYear = new Date(releaseDate!).getFullYear()
   const badgeBgColor = getColorByVoteAverage(voteAverage)
   const genresText = genres.map((genre) => genre.name).join(', ')
+  const firstTenCast = cast.slice(0, 10)
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {voteAverage && (
         <Badge style={styles.badge} bgColor={badgeBgColor}>
-          {voteAverage}
+          <View style={styles.badgeContent}>
+            <FontAwesomeIcon color="white" icon={faStar} />
+            <Text style={styles.badgeText}>{voteAverage}</Text>
+          </View>
         </Badge>
       )}
       <Image
@@ -71,33 +79,17 @@ export default function MovieDetailScreen({ route }: Props) {
 
         <View style={styles.section}>
           {movieCastQuery.isLoading && <ActivityIndicator />}
-          {movieCastQuery.data?.cast.map((item) => {
-            if (!item.profile_path) return null
-            return <CastItem key={item.id} {...item} />
-          })}
+          <FlatList
+            horizontal
+            keyExtractor={({ id }) => id.toString()}
+            data={firstTenCast}
+            renderItem={({ item }) => <CastItem {...item} />}
+          />
         </View>
       </View>
     </ScrollView>
   )
 }
-
-const CastItem = React.memo<Cast>(({ profile_path, name }) => {
-  return (
-    <View style={styles.castContainer}>
-      <Image
-        resizeMode="contain"
-        style={styles.castImage}
-        accessibilityIgnoresInvertColors
-        source={{
-          uri: `https://image.tmdb.org/t/p/w500${profile_path}`,
-          width: 50,
-          height: 50
-        }}
-      />
-      <Text style={[styles.text, styles.castName]}>{name}</Text>
-    </View>
-  )
-})
 
 const styles = StyleSheet.create({
   container: {
@@ -128,6 +120,15 @@ const styles = StyleSheet.create({
     zIndex: 1,
     right: 16
   },
+  badgeContent: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  badgeText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    marginLeft: 4
+  },
   text: {
     textAlign: 'justify',
     lineHeight: 20,
@@ -137,17 +138,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 16
   },
-  castContainer: {
-    flexDirection: 'row',
-    marginBottom: 8,
-    alignItems: 'center'
-  },
-  castName: {
-    marginLeft: 8
-  },
-  castImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25
+  activeIndicator: {
+    marginTop: 16
   }
 })

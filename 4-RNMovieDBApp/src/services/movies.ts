@@ -28,8 +28,12 @@ export const moviesApi = createApi({
         { type: 'PopularMovies', id: page ?? 1 }
       ]
     }),
-    getNowPlayingMovies: builder.query<MovieDBResult, void>({
-      query: () => ({ method: 'GET', url: '/movie/now_playing' }),
+    getNowPlayingMovies: builder.query<MovieDBResult, TParams>({
+      query: ({ page }) => ({
+        method: 'GET',
+        url: '/movie/now_playing',
+        params: { page }
+      }),
       providesTags: () => [{ type: 'NowPlayingMovies', id: 'LIST' }]
     }),
     getMovieDetails: builder.query<IMovieDetails, number>({

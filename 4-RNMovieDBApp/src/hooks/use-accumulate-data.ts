@@ -4,22 +4,44 @@ type TReturn<T> = [
   T[],
   {
     reset: () => void
-    setAccumulatedData: React.Dispatch<React.SetStateAction<T[]>>
   }
 ]
 
-function useAccumulateData<T>(data?: T[]): TReturn<T> {
+type TOptions<T> = {
+  key?: keyof T
+  filterDuplicatesByKey?: boolean
+}
+
+function useAccumulateData<T extends Object>(
+  data?: T[],
+  options?: TOptions<T>
+): TReturn<T> {
+  const { key = 'id', filterDuplicatesByKey = true } = options || {}
+  const keys = React.useRef<Set<typeof key>>(new Set([]))
   const [accumulatedData, setAccumulatedData] = React.useState<T[]>(data || [])
 
   const reset = React.useCallback(() => {
+    keys.current = new Set([])
     setAccumulatedData([])
   }, [])
 
   React.useEffect(() => {
-    if (data) setAccumulatedData((prevData) => [...prevData, ...data])
-  }, [data])
+    if (!data) return
+    if (!Array.isArray(data)) return
 
-  return [accumulatedData, { reset, setAccumulatedData }]
+    setAccumulatedData((prevData) => {
+      const newData = data.filter((item) => {
+        const keyValue = item[key as keyof T] as typeof key
+        if (!keyValue) true
+        if (filterDuplicatesByKey && keys.current.has(keyValue)) return false
+        keys.current.add(keyValue)
+        return true
+      })
+      return [...prevData, ...newData]
+    })
+  }, [data, key, filterDuplicatesByKey])
+
+  return [accumulatedData, { reset }]
 }
 
 export default useAccumulateData

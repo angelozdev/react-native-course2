@@ -15,6 +15,7 @@ function PopularMovies({ navigation }: Props) {
   })
 
   const [movieList, { reset }] = useAccumulateData(data?.results)
+
   const handleEndReached = () => {
     if (data?.total_pages && page < data.total_pages) {
       setPage((prevPage) => prevPage + 1)

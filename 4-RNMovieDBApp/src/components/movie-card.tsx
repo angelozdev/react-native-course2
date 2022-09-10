@@ -4,8 +4,8 @@ import {
   Text,
   StyleSheet,
   Image,
-  Pressable,
-  type PressableStateCallbackType
+  Animated,
+  TouchableOpacity
 } from 'react-native'
 import { Badge } from './badge'
 
@@ -20,6 +20,8 @@ type Props = {
   onPress?: () => void
 }
 
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity)
+
 function MovieCard({
   title,
   overview,
@@ -27,18 +29,33 @@ function MovieCard({
   voteAverage,
   onPress
 }: Props) {
+  const scale = React.useRef(new Animated.Value(1)).current
   const badgeColor = getColorByVoteAverage(voteAverage)
   const urlImage = `https://image.tmdb.org/t/p/w500${posterPath}`
-  const getContainerStyles = ({ pressed }: PressableStateCallbackType) => [
-    styles.container,
-    pressed && styles.isPressed
-  ]
+
+  const handlePressIn = () => {
+    Animated.spring(scale, {
+      toValue: 0.95,
+      useNativeDriver: true
+    }).start()
+  }
+
+  const handlePressOut = () => {
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true
+    }).start()
+  }
 
   return (
-    <Pressable
-      onPress={onPress}
+    <AnimatedTouchable
       accessibilityRole="button"
-      style={getContainerStyles}
+      activeOpacity={0.8}
+      onLongPress={handlePressOut}
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={[styles.container, { transform: [{ scale }] }]}
     >
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
@@ -53,12 +70,10 @@ function MovieCard({
           />
         </View>
         <View style={styles.overview}>
-          <Text numberOfLines={6} style={styles.overviewText}>
-            {overview}
-          </Text>
+          <Text numberOfLines={6}>{overview}</Text>
         </View>
       </View>
-    </Pressable>
+    </AnimatedTouchable>
   )
 }
 
@@ -67,9 +82,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: '#fff'
-  },
-  isPressed: {
-    opacity: 0.8
   },
   title: {
     fontSize: 18,
@@ -90,7 +102,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center'
   },
-  overviewText: {},
   imageContainer: {
     marginRight: 16,
     borderRadius: 8,

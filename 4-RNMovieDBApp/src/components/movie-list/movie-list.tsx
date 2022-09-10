@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   ListRenderItem,
   RefreshControl,
@@ -29,7 +30,7 @@ export default function MovieList({
   onEndReached
 }: Props) {
   const renderItem: ListRenderItem<IMovie> = ({ item }) => {
-    const { title, poster_path, vote_average, overview, id } = item
+    const { title, poster_path, vote_average, overview } = item
     return (
       <MovieCard
         overview={overview}
@@ -37,7 +38,6 @@ export default function MovieList({
         title={title}
         voteAverage={vote_average}
         onPress={() => onPressMovie?.(item)}
-        id={id}
       />
     )
   }
@@ -52,7 +52,8 @@ export default function MovieList({
       keyExtractor={({ id }) => String(id)}
       ItemSeparatorComponent={Separator}
       onEndReached={onEndReached}
-      onEndReachedThreshold={5}
+      onEndReachedThreshold={1}
+      ListFooterComponent={isFetching ? <ActivityIndicator size={50} /> : null}
     />
   )
 }

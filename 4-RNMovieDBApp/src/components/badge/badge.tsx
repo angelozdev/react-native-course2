@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ViewStyle } from 'react-native'
 import React from 'react'
 
 type Props = {
-  children: number | string
+  children: React.ReactNode
   bgColor?: string
   style?: ViewStyle
 }
@@ -10,7 +10,11 @@ type Props = {
 export default function Badge({ children, bgColor = '#ccc', style }: Props) {
   return (
     <View style={[styles.container, { backgroundColor: bgColor }, style]}>
-      <Text style={styles.text}>{children}</Text>
+      {typeof children === 'string' || typeof children === 'number' ? (
+        <Text style={styles.text}>{children}</Text>
+      ) : (
+        children
+      )}
     </View>
   )
 }
@@ -25,7 +29,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-    elevation: 3
+    elevation: 3,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   text: {
     color: '#fff'
